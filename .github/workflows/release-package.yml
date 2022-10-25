@@ -1,8 +1,7 @@
 name: Node.js Package
 
 on:
-  release:
-    types: [created]
+  push:
 
 jobs:
   build:
@@ -44,6 +43,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 12
-      - run: node /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task
+      - run: node /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task &
 
       
