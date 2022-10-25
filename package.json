@@ -1,0 +1,19 @@
+{
+  "name": "@faraz-ahmed-emumba/github-actions-task",
+  "version": "1.0.0",
+  "description": "Github Actions Practice Task",
+  "main": "index.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faraz-ahmed-emumba/github-actions-task.git"
+  },
+  "author": "Syed Faraz Ahmed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/faraz-ahmed-emumba/github-actions-task/issues"
+  },
+  "homepage": "https://github.com/faraz-ahmed-emumba/github-actions-task#readme"
+}
