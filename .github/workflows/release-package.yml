@@ -44,7 +44,7 @@ jobs:
     needs: publish-to-github-package-registry
     runs-on: self-hosted
     permissions:
-      pacakge: write
+      package: write
       contents: read
     steps:
       - uses: actions/checkout@v3
