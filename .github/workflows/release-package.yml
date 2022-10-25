@@ -13,11 +13,6 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build-artefacts
-          path: /home/ec2-user/app/index.js
-          retention-days: 5
       - run: npm test
 
   publish-to-github-package-registry:
@@ -48,6 +43,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 12
-      - run: node /home/ec2-user/app/index.js
+      - run: node /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task
 
       
