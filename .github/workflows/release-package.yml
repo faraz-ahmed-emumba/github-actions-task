@@ -13,9 +13,6 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
-      - run: npm run build
-        env:
-          NAME: ${{secrets.NAME}}
       - uses: actions/upload-artifact@v2
         with:
           name: build-artefacts
