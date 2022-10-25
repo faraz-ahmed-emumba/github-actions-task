@@ -27,7 +27,7 @@ jobs:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
       - run: npm ci
-      - run: npm version ${{ github.event.release.tag_name }}
+      - run: npm version
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -43,6 +43,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 12
-      - run: node /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task &
+      - run: npm i -g pm2
+      - run: pm2 start /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task --watch
+        env:
+          NAME: ${{secrets.NAME}}
+          APP_VERSION: ${{ github.event.release.tag_name }}
 
       
