@@ -41,7 +41,7 @@ jobs:
       - shell: bash
         run: |
           cp -r /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task /home/ec2-user/app
-          export NAME=${{secrets.NAME}}
+          export NAME="${{secrets.NAME}}"
           APP_VERSION=$(cat /home/ec2-user/app/github-actions-task/package.json | grep version| awk '{print $2}' | tr -d '",')
           export APP_VERSION
           pm2 stop all && pm2 start /home/ec2-user/app/github-actions-task/ index.js --watch --update-env
