@@ -39,14 +39,10 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 12
-      - run: npm i -g pm2
-      - run: pm2 start /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task --watch
-        env:
-          NAME: ${{secrets.NAME}}
-          APP_VERSION: ${{ github.event.release.tag_name }}
+      - shell: bash
+        run: |
+          cp -r /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task /home/ec2-user/app
+          export NAME ${{secrets.NAME}}
+          export APP_VERSION ${{ github.event.release.tag_name }}
 
       
