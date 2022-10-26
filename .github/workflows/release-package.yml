@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
     - "!.github/workflows/release-package.yml"
+    - "!README.md"
 
 jobs:
   build:
