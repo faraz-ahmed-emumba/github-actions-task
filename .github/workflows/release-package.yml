@@ -28,9 +28,10 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: npm ci
       - run: npm version patch
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          greater-version-only: true
 
   deploy-to-ec2:
     needs: publish-to-github-package-registry
@@ -43,6 +44,6 @@ jobs:
         run: |
           cp -r /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task /home/ec2-user/app
           export NAME ${{secrets.NAME}}
-          export APP_VERSION ${{ github.event.release.tag_name }}
+          export APP_VERSION ${{ jobs.publish-to-github-package-registry.outputs.version }}
 
       
