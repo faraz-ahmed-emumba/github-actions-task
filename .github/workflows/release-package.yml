@@ -44,6 +44,6 @@ jobs:
         run: |
           cp -r /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task /home/ec2-user/app
           export NAME ${{secrets.NAME}}
-          export APP_VERSION ${{ publish-to-github-package-registry.outputs.version }}
+          export APP_VERSION ${{ needs.publish-to-github-package-registry.outputs.version }}
 
       
