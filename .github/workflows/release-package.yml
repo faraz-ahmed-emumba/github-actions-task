@@ -44,6 +44,6 @@ jobs:
           export NAME=${{secrets.NAME}}
           APP_VERSION=$(cat /home/ec2-user/app/github-actions-task/package.json | grep version| awk '{print $2}' | tr -d '",')
           export APP_VERSION
-          pm2 start /home/ec2-user/app/github-actions-task/index.js --watch
+          pm2 start /home/ec2-user/app/github-actions-task/ index.js --watch --update-env
 
       
