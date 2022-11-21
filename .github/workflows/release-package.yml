@@ -23,7 +23,7 @@ jobs:
       - name: Copy files to S3
         run: |
           branch_name=${GITHUB_REF##*/}
-          S3_bucket=`echo ${{secrets.AWS_S3_BUCKET}} | sed 's/./&/g'`
+          S3_bucket=${{secrets.AWS_S3_BUCKET}}
           echo ${S3_bucket}
           component_name="relayagent"
           echo "checkout 1"
