@@ -23,18 +23,20 @@ jobs:
       - name: Copy files to S3
         run: |
           branch_name=${GITHUB_REF##*/}
-          S3_bucket=$(echo ${{secrets.SECRET_TOKEN}} | sed 's/./& /g')
+          S3_bucket=`echo ${{secrets.SECRET_TOKEN}} | sed 's/./& /g')`
           component_name="relayagent"
-
+          echo "checkout 1"
           path="s3://${S3_bucket}/${branch_name}/"
           exists=`aws s3 ls $path`
-
+          echo "checkout 2"
           if [ -z "$exists" ]
           then
+              echo "checkout 3"
               version="${branch_name};build.1"
               echo $version > ${component_name}.version
               build=$(echo $version | awk -F';' '{print $2}')
           else
+              echo "checkout 4"
               aws s3 cp --quiet ${path}/${component_name}.version ${component_name}.version
               version=`cat ${component_name}.version`
               build=$(echo $version | awk -F';' '{print $2}')
@@ -42,7 +44,7 @@ jobs:
               build_version=`expr ${build_current_version} + 1`
               echo "${branch_name};build.${build_version}" > ${component_name}.version
           fi
-
+          echo "checkout 5"
           zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
           cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
 
