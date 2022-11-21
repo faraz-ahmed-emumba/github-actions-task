@@ -24,9 +24,11 @@ jobs:
         run: |
           branch_name=${GITHUB_REF##*/}
           S3_bucket=`echo ${{secrets.AWS_S3_BUCKET}} | sed 's/./& /g'`
+          echo ${S3_bucket}
           component_name="relayagent"
           echo "checkout 1"
           path="s3://${S3_bucket}/${branch_name}/"
+          echo $path
           exists=`aws s3 ls $path`
           echo "checkout 2"
           if [ -z "$exists" ]
