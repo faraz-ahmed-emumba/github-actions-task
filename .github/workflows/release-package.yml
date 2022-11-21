@@ -41,7 +41,7 @@ jobs:
               build_version=`expr ${build_current_version} + 1`
               echo "${branch_name};build.${build_version}" > ${component_name}.version
           fi
-          touch relay-agent ${component_name}.version
+          touch relay-agent ${component_name}.version relayagent_install.sh relayagent_remove.sh relayagent.service
           zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
           cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
 
