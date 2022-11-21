@@ -32,16 +32,16 @@ jobs:
           then
               version="${branch_name};build.1"
               echo $version > ${component_name}.version
-              build=$(echo $version | awk -F';' '{print $2}')
+              build_version=$(echo $version | awk -F';' '{print $2}')
           else
               aws s3 cp --quiet ${path}/${component_name}.version ${component_name}.version
               version=`cat ${component_name}.version`
               build=$(echo $version | awk -F';' '{print $2}')
               build_current_version=$(echo $version | awk -F';' '{print $2}' | awk -F'.' '{print $2}')
-              build_version=`expr ${build_current_version} + 1`
-              echo "${branch_name};build.${build_version}" > ${component_name}.version
+              build_new_version=`expr ${build_current_version} + 1`
+              build_version=$(echo "${branch_name};build.${build_new_version}")
+              echo ${build_verson} > ${component_name}.version
           fi
-          touch relay-agent ${component_name}.version relayagent_install.sh relayagent_remove.sh relayagent.service
           zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
           cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
 
