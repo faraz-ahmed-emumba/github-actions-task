@@ -25,8 +25,8 @@ jobs:
           branch_name=${GITHUB_REF##*/}
           component_name="relayagent"
 
-          path="s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/"
-          exists=`aws s3 ls $path`
+          #path="s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/"
+          exists=`aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/`
 
           if [ -z "$exists" ]
           then
@@ -34,7 +34,7 @@ jobs:
               echo $version > ${component_name}.version
               build=$(echo $version | awk -F';' '{print $2}')
           else
-              aws s3 cp --quiet ${path}/${component_name}.version ${component_name}.version
+              aws s3 cp --quiet s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}//${component_name}.version ${component_name}.version
               version=`cat ${component_name}.version`
               build=$(echo $version | awk -F';' '{print $2}')
               build_current_version=$(echo $version | awk -F';' '{print $2}' | awk -F'.' '{print $2}')
@@ -45,13 +45,13 @@ jobs:
           zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
           cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
 
-          aws s3 cp relay-agent-${branch_name}-${build_version}.zip ${path} --acl public-read
-          aws s3 cp relay-agent-${branch_name}-latest.zip ${path} --acl public-read
-          aws s3 cp ${component_name}.version ${path}/${component_name}.version
+          aws s3 cp relay-agent-${branch_name}-${build_version}.zip s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/ --acl public-read
+          aws s3 cp relay-agent-${branch_name}-latest.zip s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/ --acl public-read
+          aws s3 cp ${component_name}.version s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/ ${component_name}.version
 
-          aws s3 cp relayagent_install.sh ${path} --acl public-read
-          aws s3 cp relayagent_remove.sh ${path} --acl public-read
-          aws s3 cp relayagent.service ${path} --acl public-read
+          aws s3 cp relayagent_install.sh s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/ --acl public-read
+          aws s3 cp relayagent_remove.sh s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/ --acl public-read
+          aws s3 cp relayagent.service s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/ --acl public-read
 
           cat <<EOF >> relay-agent-${branch_name}-${build_version}.yaml
           version: ${branch_name}+${build}
@@ -60,6 +60,6 @@ jobs:
           RelayAgentServiceDownloadUrl : https://${{ secrets.AWS_S3_BUCKET }}.s3.us-east-2.amazonaws.com/${branch_name}/relayagent.service"
           EOF
 
-          aws s3 cp relay-agent-${branch_name}-${build_version}.yaml ${path}
+          aws s3 cp relay-agent-${branch_name}-${build_version}.yaml s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/
 
       
