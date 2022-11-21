@@ -41,7 +41,7 @@ jobs:
               build_new_version=`expr ${build_current_version} + 1`
               build_version=$(echo build.${build_new_version})
               echo $build_version
-              echo ${build_version} > ${component_name}.version
+              echo "${branch_name};${build_version}" > ${component_name}.version
           fi
           
           touch relay-agent ${component_name}.version
