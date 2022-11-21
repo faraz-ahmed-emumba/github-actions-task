@@ -3,6 +3,7 @@ name: Node.js Package
 on:
   push:
     branches: [master]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,7 +19,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ZTNA }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ZTNA }}
           aws-region: us-east-2
-          
+
       - name: Copy files to S3
         run: |
           branch_name=${GITHUB_REF##*/}
