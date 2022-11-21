@@ -23,14 +23,14 @@ jobs:
       - name: Copy files to S3
         run: |
           branch_name=${GITHUB_REF##*/}
-          echo ${{secrets.AWS_S3_BUCKET}} | sed 's/./& /g' > S3_bucket.txt
+          echo ${{ secrets.AWS_S3_BUCKET }} | sed 's/./& /g' > S3_bucket.txt
           cat S3_bucket.txt
           S3_bucket=$(cat S3_bucket.txt | tr -d ' ')
           echo ${S3_bucket}
           component_name="relayagent"
           echo "checkout 1"
           path="s3://${S3_bucket}/${branch_name}/"
-          exists=$(aws s3 ls s3://${{secrets.AWS_S3_BUCKET}}/${branch_name}/)
+          exists=$(aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/)
           echo "checkout 2"
           if [ -z "$exists" ]
           then
