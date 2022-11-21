@@ -25,7 +25,7 @@ jobs:
           branch_name=${GITHUB_REF##*/}
           component_name="relayagent"
           S3_bucket=${{ secrets.AWS_S3_BUCKET }}
-          path="s3://${S3_bucket}/${branch_name}/"
+          path="s3://${S3_bucket}/${branch_name}"
           exists=$((aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/) || true)
 
           echo "checkout 2"
