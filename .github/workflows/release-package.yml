@@ -28,7 +28,7 @@ jobs:
           component_name="relayagent"
           echo "checkout 1"
           path="s3://${S3_bucket}/${branch_name}/"
-          exists=`aws s3 ls s3://${{secrets.AWS_S3_BUCKET}}/${branch_name}/`
+          aws s3 ls s3://${{secrets.AWS_S3_BUCKET}}/${branch_name}/
           echo "checkout 2"
           if [ -z "$exists" ]
           then
@@ -48,6 +48,7 @@ jobs:
           echo "checkout 5"
           zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
           cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
+          exists=`aws s3 ls s3://${{secrets.AWS_S3_BUCKET}}/${branch_name}/`
 
           aws s3 cp relay-agent-${branch_name}-${build_version}.zip ${path} --acl public-read
           aws s3 cp relay-agent-${branch_name}-latest.zip ${path} --acl public-read
