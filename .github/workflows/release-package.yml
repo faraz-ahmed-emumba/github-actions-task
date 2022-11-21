@@ -30,8 +30,8 @@ jobs:
           component_name="relayagent"
           echo "checkout 1"
           path="s3://${S3_bucket}/${branch_name}/"
-          aws s3 ls ${path}
           aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/
+          echo "checkpoint here"
           exists=$(aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/)
           echo "checkout 2"
           if [ -z "$exists" ]
