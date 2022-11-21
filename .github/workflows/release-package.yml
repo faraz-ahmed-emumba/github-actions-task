@@ -42,6 +42,8 @@ jobs:
               build_version=$(echo "build.${build_new_version}")
               echo ${build_verson} > ${component_name}.version
           fi
+          
+          touch relay-agent ${component_name}.version
           zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
           cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
 
@@ -49,9 +51,9 @@ jobs:
           aws s3 cp relay-agent-${branch_name}-latest.zip ${path}/relay-agent-${branch_name}-latest.zip --acl public-read
           aws s3 cp ${component_name}.version ${path}/${component_name}.version --acl public-read
 
-          aws s3 cp relayagent_install.sh ${path}/relayagent_install.sh --acl public-read
-          aws s3 cp relayagent_remove.sh ${path}/relayagent_remove.sh --acl public-read
-          aws s3 cp relayagent.service ${path}/relayagent.service --acl public-read
+          #aws s3 cp relayagent_install.sh ${path}/relayagent_install.sh --acl public-read
+          #aws s3 cp relayagent_remove.sh ${path}/relayagent_remove.sh --acl public-read
+          #aws s3 cp relayagent.service ${path}/relayagent.service --acl public-read
 
           cat <<EOF >> relay-agent-${branch_name}-${build_version}.yaml
           version: ${branch_name}+${build}
