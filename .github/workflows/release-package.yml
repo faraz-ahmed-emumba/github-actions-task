@@ -6,45 +6,60 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 12
+
       - run: npm ci
       - run: npm test
-
-  publish-to-github-package-registry:
-    needs: build
-    runs-on: self-hosted
-    permissions:
-      packages: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          node-version: 12
-          registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-  deploy-to-ec2:
-    needs: publish-to-github-package-registry
-    runs-on: self-hosted
-    permissions:
-      packages: write
-      contents: read
-    steps:
-      - shell: bash
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ZTNA }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ZTNA }}
+          aws-region: us-east-2
+          
+      - name: Copy files to S3
         run: |
-          cp -r /home/ec2-user/actions-runner/_work/github-actions-task/github-actions-task /home/ec2-user/app
-          export NAME="${{secrets.NAME}}"
-          APP_VERSION=$(cat /home/ec2-user/app/github-actions-task/package.json | grep version| awk '{print $2}' | tr -d '",')
-          export APP_VERSION
-          pm2 stop all && pm2 start /home/ec2-user/app/github-actions-task/ index.js --watch --update-env
+          branch_name=${GITHUB_REF##*/}
+          S3_bucket=${{ secrets.AWS_S3_BUCKET }}
+          component_name="relayagent"
+
+          path="s3://${S3_bucket}/${branch_name}/"
+          exists=`aws s3 ls $path`
+
+          if [ -z "$exists" ]
+          then
+              version="${branch_name};build.1"
+              echo $version > ${component_name}.version
+              build=$(echo $version | awk -F';' '{print $2}')
+          else
+              aws s3 cp --quiet ${path}/${component_name}.version ${component_name}.version
+              version=`cat ${component_name}.version`
+              build=$(echo $version | awk -F';' '{print $2}')
+              build_current_version=$(echo $version | awk -F';' '{print $2}' | awk -F'.' '{print $2}')
+              build_version=`expr ${build_current_version} + 1`
+              echo "${branch_name};build.${build_version}" > ${component_name}.version
+          fi
+
+          zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
+          cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
+
+          aws s3 cp relay-agent-${branch_name}-${build_version}.zip ${path} --acl public-read
+          aws s3 cp relay-agent-${branch_name}-latest.zip ${path} --acl public-read
+          aws s3 cp ${component_name}.version ${path}/${component_name}.version
+
+          aws s3 cp relayagent_install.sh ${path} --acl public-read
+          aws s3 cp relayagent_remove.sh ${path} --acl public-read
+          aws s3 cp relayagent.service ${path} --acl public-read
+
+          cat <<EOF >> relay-agent-${branch_name}-${build_version}.yaml
+          version: ${branch_name}+${build}
+          releaseDate: $(date +%Y-%m-%dT%H:%M:%S.%N)
+          RelayAgentDownloadUrl: https://${{ secrets.AWS_S3_BUCKET }}.s3.us-east-2.amazonaws.com/${branch_name}/relay-agent-${branch_name}%2B${build}.zip
+          RelayAgentServiceDownloadUrl : https://${{ secrets.AWS_S3_BUCKET }}.s3.us-east-2.amazonaws.com/${branch_name}/relayagent.service"
+          EOF
+
+          aws s3 cp relay-agent-${branch_name}-${build_version}.yaml ${path}
 
       
