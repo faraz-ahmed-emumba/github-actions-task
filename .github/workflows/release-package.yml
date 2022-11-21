@@ -23,10 +23,9 @@ jobs:
       - name: Copy files to S3
         run: |
           branch_name=${GITHUB_REF##*/}
-          S3_bucket=${{ secrets.AWS_S3_BUCKET }}
           component_name="relayagent"
 
-          path="s3://${S3_bucket}/${branch_name}/"
+          path="s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/"
           exists=`aws s3 ls $path`
 
           if [ -z "$exists" ]
