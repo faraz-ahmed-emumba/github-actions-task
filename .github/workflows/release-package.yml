@@ -16,7 +16,7 @@ jobs:
           cat $GITHUB_ENV
           branch_name=${GITHUB_REF##*/}
           echo "branch_name=${branch_name}" >> $GITHUB_ENV
-          cd .github/workflows/
+          cd test
           echo "hello" > test.sh
       - name: Check env var
         run: |
