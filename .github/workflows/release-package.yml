@@ -8,61 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SERVICE_NAME: "My service"
     steps:
-      - uses: actions/checkout@v3
-
-      - run: npm ci
-      - run: npm test
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ZTNA }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ZTNA }}
-          aws-region: us-east-2
-
-      - name: Copy files to S3
+      - name: Set env var
         run: |
+          cat $GITHUB_ENV
           branch_name=${GITHUB_REF##*/}
-          component_name="relayagent"
-          S3_bucket=${{ secrets.AWS_S3_BUCKET }}
-          path="s3://${S3_bucket}/${branch_name}"
-          exists=$((aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/${branch_name}/) || true)
-
-          if [ -z "$exists" ]
-          then
-              version="${branch_name};build.1"
-              echo $version > ${component_name}.version
-              build_version=$(echo $version | awk -F';' '{print $2}')
-          else
-              aws s3 cp --quiet ${path}/${component_name}.version ${component_name}.version
-              version=`cat ${component_name}.version`
-              build=$(echo $version | awk -F';' '{print $2}')
-              build_current_version=$(echo $version | awk -F';' '{print $2}' | awk -F'.' '{print $2}')
-              build_new_version=`expr ${build_current_version} + 1`
-              build_version=$(echo build.${build_new_version})
-              echo $build_version
-              echo "${branch_name};${build_version}" > ${component_name}.version
-          fi
-          
-          touch relay-agent ${component_name}.version
-          zip relay-agent-${branch_name}-${build_version}.zip relay-agent ${component_name}.version
-          cp relay-agent-${branch_name}-${build_version}.zip relay-agent-${branch_name}-latest.zip
-
-          aws s3 cp relay-agent-${branch_name}-${build_version}.zip ${path}/relay-agent-${branch_name}-${build_version}.zip --acl public-read
-          aws s3 cp relay-agent-${branch_name}-latest.zip ${path}/relay-agent-${branch_name}-latest.zip --acl public-read
-          aws s3 cp ${component_name}.version ${path}/${component_name}.version --acl public-read
-
-          #aws s3 cp relayagent_install.sh ${path}/relayagent_install.sh --acl public-read
-          #aws s3 cp relayagent_remove.sh ${path}/relayagent_remove.sh --acl public-read
-          #aws s3 cp relayagent.service ${path}/relayagent.service --acl public-read
-
-          cat <<EOF >> relay-agent-${branch_name}-${build_version}.yaml
-          version: ${branch_name}+${build}
-          releaseDate: $(date +%Y-%m-%dT%H:%M:%S.%N)
-          RelayAgentDownloadUrl: https://${{ secrets.AWS_S3_BUCKET }}.s3.us-east-2.amazonaws.com/${branch_name}/relay-agent-${branch_name}%2B${build}.zip
-          RelayAgentServiceDownloadUrl : https://${{ secrets.AWS_S3_BUCKET }}.s3.us-east-2.amazonaws.com/${branch_name}/relayagent.service"
-          EOF
-
-          aws s3 cp relay-agent-${branch_name}-${build_version}.yaml ${path}/relay-agent-${branch_name}-${build_version}.yaml
-
-      
+          echo "branch_name=${branch_name}" >> $GITHUB_ENV
+      - name: Check env var
+        run: |
+          cat $GITHUB_ENV
