@@ -11,6 +11,7 @@ jobs:
     env:
       SERVICE_NAME: "My service"
     steps:
+      - uses: actions/checkout@v2
       - name: Set env var
         run: |
           cat $GITHUB_ENV
