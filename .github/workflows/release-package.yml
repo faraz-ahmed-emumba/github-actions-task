@@ -16,6 +16,8 @@ jobs:
           cat $GITHUB_ENV
           branch_name=${GITHUB_REF##*/}
           echo "branch_name=${branch_name}" >> $GITHUB_ENV
+          touch test.sh
       - name: Check env var
         run: |
           cat $GITHUB_ENV
+          cat test.sh
