@@ -11,14 +11,11 @@ jobs:
     env:
       SERVICE_NAME: "My service"
     steps:
-      - uses: actions/checkout@v2
       - name: Set env var
-        run: |
-          cat $GITHUB_ENV
-          branch_name=${GITHUB_REF##*/}
-          echo "branch_name=${branch_name}" >> $GITHUB_ENV
-          cd test
-          echo "hello" > test.sh
+        uses: actions/checkout@v3
+        with:
+          repository: faraz-ahmed-emumba/cloud-management-II
+          ref: new-branch
       - name: Check env var
         run: |
           cat $GITHUB_ENV
