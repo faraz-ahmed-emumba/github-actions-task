@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     env:
       SERVICE_NAME: "My service"
     steps:
@@ -18,5 +18,7 @@ jobs:
           ref: new-branch
       - name: Check env var
         run: |
-          cat $GITHUB_ENV
+          echo $GITHUB_ENV
           cat test.sh
+          echo $GITHUB_REF
+          
