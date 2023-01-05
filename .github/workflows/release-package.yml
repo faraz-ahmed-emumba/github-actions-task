@@ -19,6 +19,7 @@ jobs:
       - name: Check env var
         run: |
           echo $GITHUB_ENV
-          cat test.sh
           echo $GITHUB_REF
+          $branch_name=${GITHUB_REF}
+          echo $branch_name
           
