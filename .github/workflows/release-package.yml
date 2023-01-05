@@ -18,8 +18,8 @@ jobs:
           ref: new-branch
       - name: Check env var
         run: |
-          echo $$Env:GITHUB_ENV
-          echo $$Env:GITHUB_REF
-          $branch_name=$Env:GITHUB_REF
+          echo $env:GITHUB_ENV
+          echo $env:GITHUB_REF
+          $branch_name=$env:GITHUB_REF
           echo $branch_name
           
