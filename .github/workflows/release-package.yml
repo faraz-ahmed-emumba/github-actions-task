@@ -17,7 +17,7 @@ jobs:
           repository: faraz-ahmed-emumba/cloud-management-II
           ref: new-branch
       - name: Check env var
-        if: ${{ github.ref_name == "test" && (env.SERVICE_NAME != 'My Service' || env.SERVICE_NAME != 'My Service 2' ) }}
+        if: ${{ github.ref_name == 'test' && (env.SERVICE_NAME != 'My Service' || env.SERVICE_NAME != 'My Service 2' ) }}
         run: |
           echo $env:GITHUB_ENV
           echo $env:GITHUB_REF
