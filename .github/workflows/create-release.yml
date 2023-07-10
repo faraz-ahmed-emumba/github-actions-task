@@ -15,7 +15,7 @@ jobs:
       - name: Create Tag Name
         id: create_tag_name
         run: |
-          echo "tag=$23.0.0.1" >> $GITHUB_OUTPUT
+          echo "tag=23.0.0.1" >> $GITHUB_OUTPUT
 
   BuildRelayAgent:
     needs: [CreateRelease]
