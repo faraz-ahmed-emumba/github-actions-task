@@ -20,4 +20,4 @@ jobs:
           else
             branch_name=${GITHUB_REF##*/}
           fi
-          echo branch_name
+          echo $branch_name
