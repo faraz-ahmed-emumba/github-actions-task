@@ -1,0 +1,34 @@
+name: Relay Agent
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "Release Tag"
+        type: string
+        required: true
+    secrets:
+      GCR_TOKEN_ZTNA:
+        required: true
+      AWS_ACCESS_KEY_ZTNA:
+        required: true
+      AWS_SECRET_KEY_ZTNA:
+        required: true
+      AWS_S3_BUCKET:
+        required: true
+      REPO_OWNER_ZTNA:
+        required: true
+jobs:
+  Build:
+  runs-on: ubuntu-20.04
+  steps:
+    - name: Increment Version
+      run: |
+        echo ${{github.event_name}}
+        echo ${GITHUB_REF}
+        if [[ "${{github.event_name}}" == "workflow_dispatch" && "${GITHUB_REF}" == *"-release-"* ]]
+        then
+          branch_name=${{ inputs.tag }}
+        else
+          branch_name=${GITHUB_REF##*/}
+        fi
+        echo branch_name
