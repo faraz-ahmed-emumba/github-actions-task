@@ -19,16 +19,16 @@ on:
         required: true
 jobs:
   Build:
-  runs-on: ubuntu-20.04
-  steps:
-    - name: Increment Version
-      run: |
-        echo ${{github.event_name}}
-        echo ${GITHUB_REF}
-        if [[ "${{github.event_name}}" == "workflow_dispatch" && "${GITHUB_REF}" == *"-release-"* ]]
-        then
-          branch_name=${{ inputs.tag }}
-        else
-          branch_name=${GITHUB_REF##*/}
-        fi
-        echo branch_name
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Increment Version
+        run: |
+          echo ${{github.event_name}}
+          echo ${GITHUB_REF}
+          if [[ "${{github.event_name}}" == "workflow_dispatch" && "${GITHUB_REF}" == *"-release-"* ]]
+          then
+            branch_name=${{ inputs.tag }}
+          else
+            branch_name=${GITHUB_REF##*/}
+          fi
+          echo branch_name
