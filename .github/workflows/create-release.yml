@@ -12,6 +12,9 @@ jobs:
     outputs:
       tag: ${{ steps.create_tag_name.outputs.tag }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GCR_TOKEN }}
       - name: Create Tag Name
         id: create_tag_name
         run: |
