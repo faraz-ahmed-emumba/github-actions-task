@@ -1,0 +1,26 @@
+name: Create Relay Agent Release
+on:
+  workflow_dispatch:
+    inputs:
+      pre-release:
+        type: boolean
+        description: Create a pre-release
+
+jobs:
+  CreateRelease:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.create_tag_name.outputs.tag }}
+    steps:
+      - name: Create Tag Name
+        id: create_tag_name
+        run: |
+          echo "tag=$23.0.0.1" >> $GITHUB_OUTPUT
+
+  BuildRelayAgent:
+    needs: [CreateRelease]
+    name: Build Relay Agent
+    uses: ./.github/workflows/relay-agent.yml
+    with:
+      tag: ${{ needs.CreateRelease.outputs.tag }}
+
