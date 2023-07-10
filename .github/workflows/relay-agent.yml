@@ -6,17 +6,6 @@ on:
         description: "Release Tag"
         type: string
         required: true
-    secrets:
-      GCR_TOKEN_ZTNA:
-        required: true
-      AWS_ACCESS_KEY_ZTNA:
-        required: true
-      AWS_SECRET_KEY_ZTNA:
-        required: true
-      AWS_S3_BUCKET:
-        required: true
-      REPO_OWNER_ZTNA:
-        required: true
 jobs:
   Build:
     runs-on: ubuntu-20.04
