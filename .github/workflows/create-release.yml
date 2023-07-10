@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GCR_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Tag Name
         id: create_tag_name
         run: |
